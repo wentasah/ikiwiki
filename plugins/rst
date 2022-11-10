@@ -64,7 +64,7 @@ def rst2html(proxy, *args):
     parts = publish_parts(kwargs["content"],
                           writer_name="html",
                           settings_overrides = { 'halt_level': 6
-                                               , 'file_insertion_enabled': 0
+                                               , 'file_insertion_enabled': 1
                                                , 'raw_enabled': 1
                                                })
     return '\n'.join(parts['html_body'].splitlines()[1:-1])

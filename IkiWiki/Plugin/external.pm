@@ -18,6 +18,13 @@ sub import {
 	my $plugin=shift;
 	return unless defined $plugin;
 
+	# Change directory to the wiki source directory. This ensures
+	# that paths used by the ".. include::" directive in the rst
+	# plugin always refer to the same (and existing) file.
+	if ($config{'srcdir'} ne '/dev/null') { # Don't chdir in tests (see t/rst.t)
+		chdir($config{'srcdir'}) || die("cannot chdir to srcdir");
+	}
+
 	my ($plugin_read, $plugin_write);
 	my $pid = open2($plugin_read, $plugin_write,
 		IkiWiki::possibly_foolish_untaint($plugin));
