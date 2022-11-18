@@ -85,7 +85,7 @@ sub rpc_call ($$;@) {
 					return "";
 				}
 				elsif ($value->isa('RPC::XML::array')) {
-					return @{$value->value};
+					return \@{$value->value};
 				}
 				elsif ($value->isa('RPC::XML::struct')) {
 					my %hash=%{$value->value};
