@@ -41,12 +41,20 @@ __copyright__ = 'Copyright © ' + __author__
 __licence__ = 'BSD-2-clause'
 
 import sys as _sys
+import subprocess
 
 from proxy import IkiWikiProcedureProxy
 
 
 publish_parts = None
 
+def needsbuild(proxy, files_to_build, deleted_files):
+    sp = subprocess.run(['''find -type f -name '*.rst' -exec grep -q -F '.. include::' '{}' ';' -print'''],
+                        shell=True, stdout=subprocess.PIPE)
+    files = [fn.removeprefix("./") for fn in sp.stdout.decode().split('\n')]
+    files = files[0:-1]
+    result = files_to_build + list(set(files) - set(files_to_build))
+    return result
 
 def rst2html(proxy, *args):
     # delayed import so docutils is only needed if you *use* rst -
@@ -83,4 +91,5 @@ def debug(s):
 proxy = IkiWikiProcedureProxy(__name__, debug_fn=None)
 proxy.hook('getsetup', getsetup)
 proxy.hook('htmlize', rst2html)
+proxy.hook('needsbuild', needsbuild)
 proxy.run()
